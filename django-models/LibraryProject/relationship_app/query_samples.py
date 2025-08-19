@@ -10,4 +10,4 @@ from relationship_app.models import Library
 all_books = Library.object.all()
 print('all Libarary')
 for lib in Library:
-  print(lib.name)
+  print(lib.books)
