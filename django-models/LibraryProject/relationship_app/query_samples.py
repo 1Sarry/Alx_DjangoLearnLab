@@ -10,7 +10,7 @@ from relationship_app.models import Author, Book, Library, Librarian
 def books_in_library(library_name):
     try:
         library = Library.objects.get(name=library_name)
-        books = Book.objects.all()
+        books = library.books.all()
         print(f"\nBooks in {library.name}:")
         for book in books:
             print("-", book.title)
