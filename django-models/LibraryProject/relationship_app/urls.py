@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import list_books, LibraryDetailView, register, CustomLoginView, CustomLogoutView
+from .views import list_books, LibraryDetailView, register, LoginView, LogoutView
 
 
 urlpatterns = [
