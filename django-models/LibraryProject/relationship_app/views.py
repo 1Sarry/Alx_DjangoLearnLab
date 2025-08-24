@@ -31,7 +31,7 @@ def register(request):
             return redirect("home")
         else:
             form = UserCreationForm()
-        return render(request, "relationship_app/regiser.html", {"form": form})
+        return render(request, "relationship_app/register.html", {"form": form})
     
 class LoginView(LoginView):
     template_name = "relationship_app/login.html"
