@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser # It used to create extra fields like role, date_of_birth and so on while User moder w/c is the default has fixed fields (first_n, last_n email, username and pw) 
 # Create your models here.
@@ -10,10 +11,16 @@ class Author(models.Model):
 class Book(models.Model):
     title = models.CharField(max_length=100)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    publication_year = models.DateTimeField()
+    publication_year = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
+    class Meta:
+        permissions = [
+            ("can_add_book", "Can add book"),
+            ("can_change_book", "Can change book"),
+            ("can_delete_book", "Can delete book"),
+        ]
     
 class Library(models.Model):
     name = models.CharField(max_length=100)
