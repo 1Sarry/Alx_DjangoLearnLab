@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import permission_required
 from .models import Book
 from .models import Library
 from django.views.generic.detail import DetailView
