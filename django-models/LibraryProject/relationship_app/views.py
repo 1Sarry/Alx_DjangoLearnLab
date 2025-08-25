@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Book
 from .models import Library
 from django.views.generic.detail import DetailView
@@ -38,3 +39,37 @@ class LoginView(LoginView):
 
 class LogoutView(LogoutView):
     template_name = "relationship_app/logout.html"
+
+
+
+#Role based views
+
+def is_admin(user):
+    return hasattr(user, "userprofile") and user.userprofile.role == "admin"
+
+def is_librarian(user):
+    return hasattr(user, "userprofile") and user.userprofile.role == "librarian"
+
+def is_member(user):
+    return hasattr(user, "userprofile") and user.userprofile.role == "member"
+
+
+# ----Views-----
+
+@login_required
+@user_passes_test(is_librarian)
+def librarian_page(request):
+    return render(request, "librarian_view.html")
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_dashboard(request):
+    return render(request, "admin_view.html")
+
+
+@login_required
+@user_passes_test(is_member)
+
+def member_page(request):
+    return(request, "member_view.html")
