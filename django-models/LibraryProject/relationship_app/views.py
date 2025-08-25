@@ -59,17 +59,17 @@ def is_member(user):
 @login_required
 @user_passes_test(is_librarian)
 def librarian_page(request):
-    return render(request, "librarian_view.html")
+    return render(request, "relationship_app/librarian_view.html")
 
 
 @login_required
 @user_passes_test(is_admin)
 def admin_dashboard(request):
-    return render(request, "admin_view.html")
+    return render(request, "relationship_app/admin_view.html")
 
 
 @login_required
 @user_passes_test(is_member)
 
 def member_page(request):
-    return(request, "member_view.html")
+    return(request, "relationship_app/member_view.html")
