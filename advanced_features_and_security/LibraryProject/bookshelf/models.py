@@ -13,7 +13,7 @@ class Book(models.Model):
         return f"{self.title} by {self.author} ({self.publication_year})"
 
 
-class UserManager(BaseUserManager):
+class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
         if not email:
             raise ValueError("The Email field must be ser")
@@ -39,7 +39,7 @@ class CustomUser(AbstractUser):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date_of_birth = models.DateField()
     profile_photo = models.ImageField()
-    objects = UserManager()
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.user
