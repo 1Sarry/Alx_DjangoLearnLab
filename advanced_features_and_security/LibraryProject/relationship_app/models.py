@@ -77,7 +77,7 @@ def create_superuser(self, username, email, password=None, **extra_fields):
             raise ValueError("Superuser must have is_superuser=True.")
 
         return self.create_user(username, email, password, **extra_fields)
-class CustomUserProfile(AbstractUser):
+class CustomUser(AbstractUser):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date_of_birth = models.DateField()
     profile_photo = models.ImageField()
