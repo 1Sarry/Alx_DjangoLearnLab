@@ -11,7 +11,7 @@ def current_datetime(request):
 
 
 @permission_required('bookshelf.can_view', raise_exception=True)
-def list_books(request):
+def book_list(request):
     books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})
 @permission_required('your_app_name.can_create', raise_exception=True)
