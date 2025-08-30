@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import permission_required
 from .models import Book
 from django.http import HttpResponse
 import datetime
-
+from .forms import ExampleForm
 def current_datetime(request):
     now = datetime.datetime.now()
     html = '<html lang="en"><body>It is now %s.</body></html>' % now
@@ -14,6 +14,16 @@ def current_datetime(request):
 def book_list(request):
     books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})
+
+
+def add_book(request):
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():  # ✅ Validates and sanitizes input
+            form.save()
+    else:
+        form = ExampleForm()
+    return render(request, "bookshelf/form_example.html", {"form": form})
 @permission_required('your_app_name.can_create', raise_exception=True)
 def books_create(request):
     if request.method == "POST":
