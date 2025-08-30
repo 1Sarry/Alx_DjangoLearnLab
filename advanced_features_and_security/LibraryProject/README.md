@@ -50,3 +50,7 @@ Testing
    - Manually tested CSRF protection by removing token (request blocked)
    - Checked XSS by entering <script> tags (escaped by Django templates)
    - Verified only allowed domains load external scripts/styles
+
+   ### Security Measures
+
+   
