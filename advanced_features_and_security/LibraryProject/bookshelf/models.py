@@ -2,11 +2,21 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser # It used to create extra fields like role, date_of_birth and so on while User moder w/c is the default has fixed fields (first_n, last_n email, username and pw) 
 from django.contrib.auth.models import BaseUserManager
 from django.conf import settings
+
+settings.AUTH_USER_MODEL
 # Create your models here.
 class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.CharField(max_length= 100)
     publication_year = models.IntegerField()
+
+    class Meta:
+        permissions = [
+          ("can_view", "Can view book"),
+          ("can_create", "Can create book"),
+          ("can_edit", "Can edit book"),
+          ("can_delete", "Can delete book"),   
+        ]
 
 
     def __str__(self):
@@ -36,10 +46,19 @@ def create_superuser(self, username, email, password=None, **extra_fields):
 
         return self.create_user(username, email, password, **extra_fields)
 class CustomUser(AbstractUser):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    # user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date_of_birth = models.DateField()
     profile_photo = models.ImageField()
     objects = CustomUserManager()
 
+    
+    class Meta:
+        permissions = [
+            ("can_view", "Can view user"),
+            ("can_create", "Can create user"),
+            ("can_edit", "Can edit user"),
+            ("can_delete", "Can delete user"),
+        ]
+        
     def __str__(self):
         return self.user

@@ -42,7 +42,7 @@ class LogoutView(LogoutView):
 
 
 
-#Role based views
+# Role based views
 
 def is_admin(user):
     return hasattr(user, "userprofile") and user.userprofile.role == "admin"
