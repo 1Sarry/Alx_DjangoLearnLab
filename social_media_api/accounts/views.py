@@ -1,14 +1,48 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
+from .permissions import IsOwnerOrReadOnly
+
 
 
 User = get_user_model()
 
+class FollowAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, user_id):
+        # user wants to follow target_user
+        target = get_object_or_404(User, id=user_id)
+        if target == request.user:
+            return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.following.add(target)
+        return Response({"detail": f"You are now following {target.username}."}, status=status.HTTP_200_OK)
+
+class UnfollowAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, user_id):
+        target = get_object_or_404(User, id=user_id)
+        if target == request.user:
+            return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.following.remove(target)
+        return Response({"detail": f"You have unfollowed {target.username}."}, status=status.HTTP_200_OK)
+
+class FollowingListAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, user_id=None):
+        # If user_id provided, list that user's following, else list current user's following
+        if user_id:
+            user = get_object_or_404(User, id=user_id)
+        else:
+            user = request.user
+        serializer = UserSerializer(user.following.all(), many=True, context={'request': request})
+        return Response(serializer.data)
 class RegisterAPIView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
