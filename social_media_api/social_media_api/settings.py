@@ -101,6 +101,9 @@ DATABASES = {
         
     }
 }
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 PORT = os.environ.get("PORT", 8000)
 
 # Password validation
