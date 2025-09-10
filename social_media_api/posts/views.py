@@ -9,19 +9,21 @@ from .serializers import PostSerializer
 User = get_user_model()
 
 class CreatePostAPIView(generics.CreateAPIView):
-    serializer_class = PostSerializer
+    
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
+        serializer_class = PostSerializer
         serializer.save(author=self.request.user)
 
 
 class FeedAPIView(APIView):
+    serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         user = request.user
-        follow_qs = user.following.all()
-        feed_posts = Post.objects.filter(author__in=follow_qs.union(User.objects.filter(id=user.id))).order_by('-created_at')
-        serializer = PostSerializer(feed_posts, many=True, context={'request': request})
+        following_users = user.following.all()
+        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
+        serializer = PostSerializer(posts, many=True, context={'request': request})
         return Response(serializer.data)
