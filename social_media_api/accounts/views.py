@@ -6,7 +6,8 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from .permissions import IsOwnerOrReadOnly
-
+from django.contrib.contenttypes.models import ContentType
+from notifications.models import Notification
 from .models import CustomUser
 
 User = get_user_model()
@@ -20,6 +21,14 @@ class FollowAPIView(APIView):
         if target == request.user:
             return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
         request.user.following.add(target)
+        if target != request.user:
+            Notification.objects.create(
+                recipient=target, 
+                actor=request.user,
+                verb='followed you',
+                target_content_type=None,
+                target_object_id=None
+            )
         return Response({"detail": f"You are now following {target.username}."}, status=status.HTTP_200_OK)
 
 class UnfollowAPIView(APIView):
