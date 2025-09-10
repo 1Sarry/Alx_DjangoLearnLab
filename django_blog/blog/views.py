@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
+from .models import Post
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth import login
 from django.contrib.auth import logout as auth_logout
@@ -10,6 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment
 from django.contrib import messages
 from .forms import CommentForm
+from taggit.models import Tag
 # Registration View
 def register_view(request):
     if request.method == "POST":
@@ -149,3 +152,19 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return self.object.post.get_absolute_url()
+    
+def search_posts(request):
+    query = request.GET.get('q')
+    results = Post.objects.none()
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    return render(request, 'blog/search_results.html', {'posts': results, 'query': query})
+
+
+def posts_by_tag(request, tag_name):
+    posts = Post.objects.filter(tags__name__iexact=tag_name)
+    return render(request, 'blog/posts_by_tag.html', {'posts': posts, 'tag_name': tag_name})

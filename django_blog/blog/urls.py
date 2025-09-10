@@ -15,12 +15,15 @@ urlpatterns = [
     path("post/<int:pk>/update/", PostUpdateView.as_view(), name="post-update"),
     path("post/<int:pk>/delete/", PostDeleteView.as_view(), name="post-delete"),
     # Comment URLs
-path("post/<int:pk>/comments/new/", CommentCreateView.as_view(), name="comment-create"),
-path("comment/<int:pk>/update/", CommentUpdateView.as_view(), name="comment-update"),
-path("comment/<int:pk>/delete/", CommentDeleteView.as_view(), name="comment-delete"),
+    path("post/<int:pk>/comments/new/", CommentCreateView.as_view(), name="comment-create"),
+    path("comment/<int:pk>/update/", CommentUpdateView.as_view(), name="comment-update"),
+    path("comment/<int:pk>/delete/", CommentDeleteView.as_view(), name="comment-delete"),
 
     path("register/", views.register_view, name="register"),
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
     path("profile/", views.profile_view, name="profile"),
+
+    path('search/', views.search_posts, name='search-posts'),
+    path('tags/<str:tag_name>/', views.posts_by_tag, name='posts_by_tag'),
 ]

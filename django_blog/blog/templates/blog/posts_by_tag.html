@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Posts tagged with "{{ tag_name }}"</h2>
+{% for post in posts %}
+    <h3><a href="{% url 'blog:post-detail' post.pk %}">{{ post.title }}</a></h3>
+{% empty %}
+    <p>No posts with this tag.</p>
+{% endfor %}
+
+</body>
+</html>
