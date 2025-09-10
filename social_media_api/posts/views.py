@@ -73,32 +73,37 @@ class LikePostAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk, *args, **kwargs):
-        post = get_object_or_404(Post, pk=pk)
+        post =  generics.get_object_or_404(Post, pk=pk)
         user = request.user
         # Prevent liking own post if you want (optional). We'll allow it but no notification if same user.
         if Like.objects.filter(post=post, user=user).exists():
             return Response({"detail": "Already liked."}, status=status.HTTP_400_BAD_REQUEST)
-        like = Like.objects.create(post=post, user=user)
+        like, created = Like.objects.created(post=post, user=request.user)
 
         # Create notification for post author (don't notify if author liked their own post)
-        if post.author != user:
-            Notification.objects.create(
-                recipient=post.author,
-                actor=user,
-                verb='liked your post',
-                target_content_type=ContentType.objects.get_for_model(post),
-                target_object_id=post.id
-            )
+    def post(self, request, pk, *args, **kwargs):
+        post = generics.get_object_or_404(Post, pk=pk)  # ✅ get post
+        like, created = Like.objects.get_or_create(user=request.user, post=post)  # ✅ like or get
 
-        serializer = LikeSerializer(like, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+        if created:
+            # Notify post author (but not if they liked their own post)
+            if post.author != request.user:
+                Notification.objects.create(
+                    recipient=post.author,
+                    actor=request.user,
+                    verb="liked your post",
+                    target_content_type=ContentType.objects.get_for_model(post),
+                    target_object_id=post.id
+                )
+            return Response({"message": "Post liked"}, status=status.HTTP_201_CREATED)
+        return Response({"message": "You already liked this post"}, status=status.HTTP_200_OK)
+        
 
 class UnlikePostAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk, *args, **kwargs):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
         user = request.user
         like_qs = Like.objects.filter(post=post, user=user)
         if not like_qs.exists():
