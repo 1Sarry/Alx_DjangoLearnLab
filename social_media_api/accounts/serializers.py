@@ -29,11 +29,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     token = serializers.CharField(read_only=True)
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ('id', 'username', 'email', 'password', 'token')
 
     def create(self, validated_data):
-        user = User.objects.create_user(
+        user = get_user_model.objects.create_user(
             username=validated_data['username'],
             email=validated_data.get('email', ''),
             password=validated_data['password']
