@@ -27,7 +27,12 @@ DEBUG = False
 
 ALLOWED_HOSTS = []
 
-
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP to HTTPS (requires HTTPS enabled)
+SESSION_COOKIE_SECURE = True  # Session cookies only over HTTPS
+CSRF_COOKIE_SECURE = True 
 # Application definition
 
 INSTALLED_APPS = [
