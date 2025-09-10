@@ -33,13 +33,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'password', 'token')
 
     def create(self, validated_data):
-        password = validated_data.pop('password')
-        user = User(**validated_data)
-        user.set_password(password)
-        user.save()
-        # create token
-        token, _ = Token.objects.get_or_create(user=user)
-        # attach token to the instance for serializer output
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data.get('email', ''),
+            password=validated_data['password']
+        )
+        token= Token.objects.create(user=user)
         user.token = token.key
         return user
 
